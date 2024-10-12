@@ -3417,6 +3417,13 @@
     <ClCompile Include="MySlider.cpp">
       <Filter>FFTv1.0\Source</Filter>
     </ClCompile>
+    <ClCompile Include="SongsButtonsListComponent.cpp">
+      <Filter>FFTv1.0\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SongButtonItem.cpp">
+      <Filter>FFTv1.0\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawablePTunableButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\..\Programs\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h">
@@ -7298,6 +7305,13 @@
     <ClInclude Include="MySlider.h">
       <Filter>FFTv1.0\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="SongsButtonsListComponent.h">
+      <Filter>FFTv1.0\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SongButtonItem.h">
+      <Filter>FFTv1.0\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawablePTunableButton.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\..\Programs\JUCE\modules\juce_audio_devices\native\oboe\src\common\README.md">

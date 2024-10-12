@@ -9,6 +9,8 @@
 #include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/MyDrawableButton.h"
 #include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/TimeComponent.h"
 #include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/MySlider.h"
+#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/SongButtonItem.h"
+#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/SongsButtonsListComponent.h"
 
 //==============================================================================
 /*
@@ -55,9 +57,12 @@ private:
 
     void changeState(TransportState newState);
 
-    void playButtonClicked();
-    void sReplayButtonClicked();
-    void openButtonClicked();
+    void playOnButtonClicked();
+    void sReplayOnButtonClicked();
+    void sNextOnButtonClicked();
+    void sPreviousOnButtonClicked();
+    void openOnButtonClicked();
+    void folderOnButtonClicked();
     void closeButtonClicked();
     void voiceOffOnButtonClicked();
 
@@ -66,6 +71,9 @@ private:
 
     void timerCallback() override;
 
+    int windowHeight = 600;
+    int windowWidth = 1060;
+
     // COMPONENTS
     AnalyserComponent analyserComponent;
     TimeComponent songDurationComponent;
@@ -73,8 +81,16 @@ private:
     MyDrawableButton* openButton;
     MyDrawableButton* playButton;
     MyDrawableButton* sReplayButton;
+    MyDrawableButton* sNextButton;
+    MyDrawableButton* sPreviousButton;
     MyDrawableButton* closeButton;
+    MyDrawableButton* folderButton;
     //juce::ToggleButton voiceOffOn;
+
+    SongsButtonsListComponent* list;
+
+    juce::Viewport viewport;
+
     int buttonHeight = 60;
     int buttonWidth = 60;
 

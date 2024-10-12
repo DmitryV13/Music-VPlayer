@@ -18,8 +18,16 @@ MainComponent::MainComponent()
 
     buttonsInit();
 
+
+    list = new SongsButtonsListComponent(900, 100);
+    addAndMakeVisible(list);
+
     //
-    setSize(800, 600);
+    setSize(windowWidth, windowHeight);//800
+
+    // viewport
+    addAndMakeVisible(viewport);
+    viewport.setViewedComponent(list, true);
 
     // slider 
     addAndMakeVisible(songProgressBar);
@@ -39,9 +47,9 @@ MainComponent::MainComponent()
 
     // vis bar
     addAndMakeVisible(analyserComponent);
-    juce::Rectangle<int> newArea2(10, buttonHeight, 1, 1);
-    newArea2.setHeight(getHeight() - (buttonHeight * 4.0));
-    newArea2.setWidth(getWidth() - 20);
+    juce::Rectangle<int> newArea2(10, buttonHeight + 10, 1, 1);
+    newArea2.setHeight(getHeight() - (buttonHeight * 4.0));// getHeight() - (buttonHeight * 4.0)
+    newArea2.setWidth(780);// getWidth() - 20
     analyserComponent.setBounds(newArea2);
     analyserComponent.updateCurrentBounds();
 
@@ -78,8 +86,20 @@ void MainComponent::buttonsInit()
     openButton->addDrawableImage("imgs/fileA-100.png", 1);
     openButton->resetImages();
     addAndMakeVisible(openButton);
-    openButton->onClick = [this] { openButtonClicked(); };
-    openButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(40, 50, 70));
+    openButton->onClick = [this] { openOnButtonClicked(); };
+    openButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(19, 21, 23));
+
+    ///////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
+    folderButton = new MyDrawableButton(
+        "Folder",
+        juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
+    folderButton->setSize(buttonWidth, buttonHeight);
+    folderButton->addDrawableImage("imgs/folder-100.png", 0);
+    folderButton->resetImages();
+    addAndMakeVisible(folderButton);
+    folderButton->onClick = [this] { folderOnButtonClicked(); };
+    folderButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(19, 21, 23));
 
     ///////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////
@@ -91,7 +111,7 @@ void MainComponent::buttonsInit()
     playButton->addClikedImage("imgs/stop-100.png");
     playButton->changeClickedChangingState(true);
     addAndMakeVisible(playButton);
-    playButton->onClick = [this] { playButtonClicked(); };
+    playButton->onClick = [this] { playOnButtonClicked(); };
     playButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(53, 105, 213));
     playButton->setEnabled(false);
 
@@ -104,9 +124,35 @@ void MainComponent::buttonsInit()
     sReplayButton->addDrawableImage("imgs/replay-100.png", 0);
     sReplayButton->resetImages();
     addAndMakeVisible(sReplayButton);
-    sReplayButton->onClick = [this] { sReplayButtonClicked(); };
+    sReplayButton->onClick = [this] { sReplayOnButtonClicked(); };
     sReplayButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(40, 50, 70));
     sReplayButton->setEnabled(false);
+
+    ///////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
+    sNextButton = new MyDrawableButton(
+        "Next",
+        juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
+    sNextButton->setSize(buttonWidth, buttonHeight);
+    sNextButton->addDrawableImage("imgs/forward-100.png", 0);
+    sNextButton->resetImages();
+    addAndMakeVisible(sNextButton);
+    sNextButton->onClick = [this] { sReplayOnButtonClicked(); };
+    sNextButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(40, 50, 70));
+    sNextButton->setEnabled(false);
+
+    ///////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
+    sPreviousButton = new MyDrawableButton(
+        "Previous",
+        juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
+    sPreviousButton->setSize(buttonWidth, buttonHeight);
+    sPreviousButton->addDrawableImage("imgs/backward-100.png", 0);
+    sPreviousButton->resetImages();
+    addAndMakeVisible(sPreviousButton);
+    sPreviousButton->onClick = [this] { sReplayOnButtonClicked(); };
+    sPreviousButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(40, 50, 70));
+    sPreviousButton->setEnabled(false);
     ///////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////
     closeButton = new MyDrawableButton(
@@ -136,6 +182,8 @@ void MainComponent::clearDataForNextSource()
     transportSource.setSource(nullptr);
     playButton->changeNormalImageDefault();
     playButton->setEnabled(false);
+    sNextButton->setEnabled(false);
+    sPreviousButton->setEnabled(false);
     changeState(Stopped);
     songName = "";
     songProgressBar.setValue(0);
@@ -196,7 +244,7 @@ void MainComponent::changeState(TransportState newState)
     }
 }
 
-void  MainComponent::playButtonClicked()
+void  MainComponent::playOnButtonClicked()
 {
     if ((state == Stopped) || (state == Paused))
         changeState(Starting);
@@ -204,7 +252,7 @@ void  MainComponent::playButtonClicked()
         changeState(Pausing);
 }
 
-void MainComponent::sReplayButtonClicked()
+void MainComponent::sReplayOnButtonClicked()
 {
     if (state == Paused)
         changeState(Stopped);
@@ -216,7 +264,7 @@ void MainComponent::voiceOffOnButtonClicked()
 {
 }
 
-void MainComponent::openButtonClicked()
+void MainComponent::openOnButtonClicked()
 {
     chooser = std::make_unique<juce::FileChooser>("Select a Wave file to play...",
         juce::File{},
@@ -230,6 +278,8 @@ void MainComponent::openButtonClicked()
             if (file != juce::File{})
             {
                 //repaint();  //redundant
+           
+                list->addSong(file);
 
                 auto* reader = formatManager.createReaderFor(file);
 
@@ -245,6 +295,9 @@ void MainComponent::openButtonClicked()
                     transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);      
                     playButton->setEnabled(true);
                     closeButton->setEnabled(true);
+                    sNextButton->setEnabled(true);
+                    sPreviousButton->setEnabled(true);
+
                     readerSource.reset(newSource.release());  
                     
                     songProgressBar.attachSource(&transportSource);
@@ -255,10 +308,22 @@ void MainComponent::openButtonClicked()
         });
 }
 
+void MainComponent::folderOnButtonClicked()
+{
+}
+
 void MainComponent::closeButtonClicked()
 {
     clearDataForNextSource();
     closeButton->setEnabled(false);
+}
+
+void MainComponent::sNextOnButtonClicked()
+{
+}
+
+void MainComponent::sPreviousOnButtonClicked()
+{
 }
 
 //==============================================================================
@@ -289,14 +354,20 @@ void MainComponent::releaseResources()
 //==============================================================================
 void MainComponent::paint(juce::Graphics& g)
 {
+    // background
     g.fillAll(juce::Colour::fromRGB(29, 30, 34));
 
+    // top menu rect
+    g.setColour(juce::Colour::fromRGB(19, 21, 23));
+    g.fillRect(juce::Rectangle<float>(0, 0, windowWidth, buttonHeight));
+
+    // for future
     if (!fileLoaded)   
         paintIfNoFileLoaded(g);
     else
         paintIfFileLoaded(g);
 
-
+    // song name
     g.setColour(juce::Colours::white);
     juce::Rectangle<int> newArea1(0, 0, getWidth(), buttonHeight);
     g.drawText(songName, newArea1, juce::Justification::centred, true);
@@ -323,16 +394,22 @@ void MainComponent::timerCallback()
 void MainComponent::resized()
 {
     // buttons
-    juce::Rectangle<int> windowA = getLocalBounds();
+    juce::Rectangle<int> windowA = getLocalBounds();//37, 196, 242
     int buttonNumber = 5;
     int buttonSpacing = 20;
 
     int cordX = 20;
     int cordY = windowA.getHeight() - (buttonHeight * 1.5);
 
-    openButton->setBounds(cordX, cordY, buttonWidth, buttonHeight);
+    openButton->setBounds(cordX, 10, buttonWidth - 20, buttonHeight - 20);
+    folderButton->setBounds(cordX + buttonWidth - 20 + 10, 10, buttonWidth - 20, buttonHeight - 20);
+
+    //cordX += buttonWidth + buttonSpacing;
+    sPreviousButton->setBounds(cordX, cordY, buttonWidth, buttonHeight);
     cordX += buttonWidth + buttonSpacing;
     playButton->setBounds(cordX, cordY, buttonWidth, buttonHeight);
+    cordX += buttonWidth + buttonSpacing;
+    sNextButton->setBounds(cordX, cordY, buttonWidth, buttonHeight);
     cordX += buttonWidth + buttonSpacing;
     sReplayButton->setBounds(cordX, cordY, buttonWidth, buttonHeight);
     cordX += buttonWidth + buttonSpacing;
@@ -350,16 +427,23 @@ void MainComponent::resized()
     // analyser
     juce::Rectangle<int> newArea2(10, buttonHeight, 1, 1);
     newArea2.setHeight(getHeight() - (buttonHeight * 4.0));
-    newArea2.setWidth(getWidth() - 20);
+    newArea2.setWidth(780);//getWidth() - 20
     analyserComponent.setCentrePosition(
         10 + (newArea2.getWidth() / 2),
-        buttonHeight + (newArea2.getHeight() / 2));
+        buttonHeight + 10 + (newArea2.getHeight() / 2));
     analyserComponent.updateCurrentBounds();
 
     // slider
     songProgressBar.setBounds(
         10, 
-        getHeight() - (buttonHeight * 2.5), 
-        getWidth() - 20, 
+        getHeight() - (buttonHeight * 2.3), 
+        780,    // getWidth() - 20
         30);
+
+    // viewport
+   
+
+
+    list->setBounds(800, 0, 260, 1000);
+    viewport.setBounds(juce::Rectangle<int>(800, 0, 260, 1000));
 }
