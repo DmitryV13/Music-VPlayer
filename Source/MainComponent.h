@@ -12,6 +12,7 @@
 #include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/SongButtonItem.h"
 #include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/SongsButtonsListComponent.h"
 
+
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
@@ -89,7 +90,7 @@ private:
 
     SongsButtonsListComponent* list;
 
-    juce::Viewport viewport;
+    //juce::Viewport viewport;
 
     int buttonHeight = 60;
     int buttonWidth = 60;

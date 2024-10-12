@@ -3423,7 +3423,9 @@
     <ClCompile Include="SongButtonItem.cpp">
       <Filter>FFTv1.0\Source</Filter>
     </ClCompile>
-    <ClCompile Include="DrawablePTunableButton.cpp" />
+    <ClCompile Include="DrawablePTunableButton.cpp">
+      <Filter>FFTv1.0\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\..\Programs\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h">
@@ -7311,7 +7313,9 @@
     <ClInclude Include="SongButtonItem.h">
       <Filter>FFTv1.0\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="DrawablePTunableButton.h" />
+    <ClInclude Include="DrawablePTunableButton.h">
+      <Filter>FFTv1.0\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\..\Programs\JUCE\modules\juce_audio_devices\native\oboe\src\common\README.md">

@@ -13,7 +13,10 @@ private:
 
 	int currentSong;
 
+	std::unique_ptr<Component> container = nullptr;
 	std::vector<SongButtonItem*> songs;
+
+	juce::Viewport viewport;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SongsButtonsListComponent)
 public:
@@ -27,5 +30,7 @@ public:
 	void folderOnButtonClicked();
 
 	void addSong(juce::File file);
+
+	juce::Component* getListContainer();
 };
 

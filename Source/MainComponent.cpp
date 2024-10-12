@@ -26,8 +26,8 @@ MainComponent::MainComponent()
     setSize(windowWidth, windowHeight);//800
 
     // viewport
-    addAndMakeVisible(viewport);
-    viewport.setViewedComponent(list, true);
+    //addAndMakeVisible(viewport);
+    //viewport.setViewedComponent(list->getListContainer(), true);
 
     // slider 
     addAndMakeVisible(songProgressBar);
@@ -310,6 +310,30 @@ void MainComponent::openOnButtonClicked()
 
 void MainComponent::folderOnButtonClicked()
 {
+    chooser = std::make_unique<juce::FileChooser>("Choose folder...",
+        juce::File{},
+        "", // Оставляем фильтр пустым, так как нам нужно выбрать папку
+        true); // Последний аргумент - true, чтобы выбрать только папки
+
+    auto chooserFlags = juce::FileBrowserComponent::openMode
+        | juce::FileBrowserComponent::canSelectDirectories; // Добавляем возможность выбора директорий
+
+    chooser->launchAsync(chooserFlags, [this](const juce::FileChooser& fc)
+        {
+            auto folder = fc.getResult(); // Получаем выбранную папку
+            if (folder != juce::File{})
+            {
+
+                // Например, если вы хотите добавить все аудиофайлы из этой папки:
+                juce::Array<juce::File> audioFiles = folder.findChildFiles(juce::File::findFiles, false, "*.wav;*.aif;*.aiff;*.mp3");
+
+                for (auto& file : audioFiles)
+                {
+                    list->addSong(file);
+                    
+                }
+            }
+        });
 }
 
 void MainComponent::closeButtonClicked()
@@ -444,6 +468,6 @@ void MainComponent::resized()
    
 
 
-    list->setBounds(800, 0, 260, 1000);
-    viewport.setBounds(juce::Rectangle<int>(800, 0, 260, 1000));
+    list->setBounds(getLocalBounds().getWidth() - 260, 0, 260, getLocalBounds().getHeight());
+    //viewport.setBounds(juce::Rectangle<int>(800, 0, 260, 540));
 }
