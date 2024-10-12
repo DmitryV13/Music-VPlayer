@@ -30,6 +30,7 @@ public:
 	void folderOnButtonClicked();
 
 	void addSong(juce::File file);
+	void setFolderName(std::string folder);
 
 	juce::Component* getListContainer();
 };

@@ -88,6 +88,11 @@ void SongsButtonsListComponent::addSong(juce::File file)
     resized();
 }
 
+void SongsButtonsListComponent::setFolderName(std::string folder)
+{
+    folderName = folder;
+}
+
 juce::Component* SongsButtonsListComponent::getListContainer()
 {
     return container.get();

@@ -326,6 +326,10 @@ void MainComponent::folderOnButtonClicked()
 
                 // Например, если вы хотите добавить все аудиофайлы из этой папки:
                 juce::Array<juce::File> audioFiles = folder.findChildFiles(juce::File::findFiles, false, "*.wav;*.aif;*.aiff;*.mp3");
+                
+                if (audioFiles.size() != 0) {
+                    list->setFolderName(folder.getFileName().toStdString());
+                }
 
                 for (auto& file : audioFiles)
                 {
