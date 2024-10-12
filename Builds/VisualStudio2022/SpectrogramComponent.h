@@ -4,7 +4,7 @@
 #include "Windows.h"
 #include <iostream>
 #include <fstream>
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/Debug.h"
+#include "../Builds/VisualStudio2022/Debug.h"
 
 class SpectrogramComponent : public juce::AudioAppComponent,
                              private juce::Timer
