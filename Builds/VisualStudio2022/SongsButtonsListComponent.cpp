@@ -1,6 +1,7 @@
 #include "SongsButtonsListComponent.h"
 
 SongsButtonsListComponent::SongsButtonsListComponent(float width_, float height_)
+    :playingIndex(-1), pressedIndex(-1)
 {
     setSize(width_, height_);
     container = std::make_unique<Component>();
@@ -76,21 +77,74 @@ void SongsButtonsListComponent::paint(juce::Graphics& g)
     container.get()->paint(g);
 }
 
-void SongsButtonsListComponent::folderOnButtonClicked()
+std::string SongsButtonsListComponent::getSongPath(int i)
 {
+    if (i<0 || i> songs.size() - 1) {
+        return "";
+    }
+    else {
+        return songs[i]->getSongPath();
+    }
+}
+
+std::pair<int, int> SongsButtonsListComponent::getIndexes()
+{
+    return std::pair<int, int>(playingIndex, pressedIndex);
+}
+
+void SongsButtonsListComponent::updateIndexes()
+{
+    if (playingIndex >= 0) {
+        songs[playingIndex]->unpressItem();
+    }
+    playingIndex = pressedIndex;
+    songs[playingIndex]->activateColor();
+}
+
+void SongsButtonsListComponent::virtualClick()
+{
+    songs[pressedIndex]->playButton->clicked();
 }
 
 void SongsButtonsListComponent::addSong(juce::File file)
 {
     SongButtonItem* tmp = new SongButtonItem(10, 170, 240, 70, file);
     songs.push_back(tmp);
+    tmp->onSongClicked([this]() {this->onSongClicked();});
     container.get()->addAndMakeVisible(tmp);
     resized();
+}
+
+void SongsButtonsListComponent::onSongClicked()
+{
+    bool itemPressed = false;
+    for (int i = 0; i < songs.size(); i++)
+    {
+        if (i == playingIndex) continue;
+        itemPressed = songs[i]->isItemPressed();
+        if (itemPressed) {
+            pressedIndex = i;
+        }
+    }
+    triggerOnSongIClickedEvent();
 }
 
 void SongsButtonsListComponent::setFolderName(std::string folder)
 {
     folderName = folder;
+}
+
+void SongsButtonsListComponent::onSongIClicked(std::function<void()> handler)
+{
+    onSongIClickedHandler = handler;
+}
+
+void SongsButtonsListComponent::triggerOnSongIClickedEvent()
+{
+    if (onSongIClickedHandler != nullptr)
+    {
+        onSongIClickedHandler();
+    }
 }
 
 juce::Component* SongsButtonsListComponent::getListContainer()

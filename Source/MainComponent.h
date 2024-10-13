@@ -67,6 +67,8 @@ private:
     void closeButtonClicked();
     void voiceOffOnButtonClicked();
 
+    void updateOnSongListClicked();
+
     void paintIfNoFileLoaded(juce::Graphics& g);
     void paintIfFileLoaded(juce::Graphics& g);
 
@@ -89,6 +91,7 @@ private:
     //juce::ToggleButton voiceOffOn;
 
     SongsButtonsListComponent* list;
+    bool virtualSIClick;
 
     //juce::Viewport viewport;
 

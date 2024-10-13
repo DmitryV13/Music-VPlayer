@@ -1,7 +1,7 @@
 #include "SongButtonItem.h"
 
 SongButtonItem::SongButtonItem(float width_, float height_, juce::File file)
-    : width(width), height(height)
+    : width(width), height(height), pressed(false)
 {
     path = file.getFullPathName().toStdString();
     juce::String fileName = file.getFileNameWithoutExtension();
@@ -42,7 +42,7 @@ SongButtonItem::SongButtonItem(float width_, float height_, juce::File file)
 }
 
 SongButtonItem::SongButtonItem(float x, float y, float width_, float height_, juce::File file)
-    : width(width), height(height)
+    : width(width), height(height), pressed(false)
 {
     path = file.getFullPathName().toStdString();
     juce::String fileName = file.getFileNameWithoutExtension();
@@ -61,6 +61,7 @@ SongButtonItem::SongButtonItem(float x, float y, float width_, float height_, ju
 
     sNameNActive = juce::Colour::fromRGB(223, 223, 223);
     sNameActive = juce::Colour::fromRGB(53, 70, 213);
+    sNameColor = sNameNActive;
 
     playButton = new MyDrawableButton(
         "Play",
@@ -72,7 +73,6 @@ SongButtonItem::SongButtonItem(float x, float y, float width_, float height_, ju
     addAndMakeVisible(playButton);
     playButton->onClick = [this] { playOnButtonClicked(); };
     playButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(53, 70, 213));
-    // playButton->setEnabled(false);
 
     //playButton->setInterceptsMouseClicks(true, false);
     playButton->setWantsKeyboardFocus(false);
@@ -89,6 +89,21 @@ SongButtonItem::~SongButtonItem()
 
 void SongButtonItem::playOnButtonClicked()
 {
+    pressed = true;
+    triggerOnSongClickedEvent();
+}
+
+void SongButtonItem::onSongClicked(std::function<void()> handler)
+{
+    onSongClickedHandler = handler;
+}
+
+void SongButtonItem::triggerOnSongClickedEvent()
+{
+    if (onSongClickedHandler != nullptr)
+    {
+        onSongClickedHandler();
+    }
 }
 
 void SongButtonItem::resized()
@@ -102,6 +117,7 @@ void SongButtonItem::paint(juce::Graphics& g)
     g.fillAll(juce::Colour::fromRGB(29, 30, 34));//29, 30, 34
 
     // border
+
     g.setColour(juce::Colour::fromRGB(53, 70, 213));
     float cornerSize = 10.0f; 
 
@@ -113,7 +129,7 @@ void SongButtonItem::paint(juce::Graphics& g)
     g.drawRoundedRectangle(x, y, w, h, cornerSize, 1);
 
     // song name
-    g.setColour(sNameNActive);
+    g.setColour(sNameColor);
     juce::Rectangle<int> newArea1(70, 15, getWidth() - 70, 40);
     g.drawText(sName, newArea1, juce::Justification::topLeft, true);
 
@@ -125,4 +141,31 @@ void SongButtonItem::paint(juce::Graphics& g)
     // disk
     juce::Rectangle<float> newArea3(70, (h / 2) - 1, 15, 15);
     g.drawImage(diskImage, newArea3);
+}
+
+void SongButtonItem::activateColor()
+{
+    sNameColor = sNameActive;
+}
+
+void SongButtonItem::disactivateColor()
+{
+    sNameColor = sNameNActive;
+}
+
+std::string SongButtonItem::getSongPath()
+{
+    return path;
+}
+
+bool SongButtonItem::isItemPressed()
+{
+    return pressed;
+}
+
+void SongButtonItem::unpressItem()
+{
+    disactivateColor();
+    playButton->changeNormalImageDefault();
+    pressed = false;
 }

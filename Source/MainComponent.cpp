@@ -3,7 +3,7 @@
 
 //==============================================================================
 MainComponent::MainComponent()
-    : state(Stopped)
+    : state(Stopped), virtualSIClick(true)
 {
     fileLoaded = new bool(false);
 
@@ -21,6 +21,7 @@ MainComponent::MainComponent()
 
     list = new SongsButtonsListComponent(900, 100);
     addAndMakeVisible(list);
+    list->onSongIClicked([this]() {this->updateOnSongListClicked(); });
 
     //
     setSize(windowWidth, windowHeight);//800
@@ -250,6 +251,10 @@ void  MainComponent::playOnButtonClicked()
         changeState(Starting);
     else if (state == Playing)
         changeState(Pausing);
+
+    if (virtualSIClick) {
+        list->virtualClick();
+    }
 }
 
 void MainComponent::sReplayOnButtonClicked()
@@ -352,6 +357,47 @@ void MainComponent::sNextOnButtonClicked()
 
 void MainComponent::sPreviousOnButtonClicked()
 {
+}
+
+void MainComponent::updateOnSongListClicked()
+{
+    std::pair<int, int> playingPressed = list->getIndexes();
+    if (playingPressed.first != playingPressed.second) {
+        list->updateIndexes();
+        auto file = juce::File(list->getSongPath(playingPressed.second));
+        if (file != juce::File{})
+        {
+
+            auto* reader = formatManager.createReaderFor(file);
+
+            if (reader != nullptr)
+            {
+                clearDataForNextSource();
+                *fileLoaded = true;
+                songName = file.getFileName();
+                analyserComponent.attachFileState(fileLoaded);
+                analyserComponent.setSampleRate(reader->sampleRate);
+
+                auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
+                transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
+                playButton->setEnabled(true);
+                closeButton->setEnabled(true);
+                sNextButton->setEnabled(true);
+                sPreviousButton->setEnabled(true);
+
+                readerSource.reset(newSource.release());
+
+                songProgressBar.attachSource(&transportSource);
+                songProgressBar.setRange(0, transportSource.getLengthInSeconds(), 0.1);
+                songDurationComponent.setTotalLength(transportSource.getLengthInSeconds());
+
+            }
+        }
+    }
+    virtualSIClick = false;
+    playButton->clicked();
+    playOnButtonClicked();
+    virtualSIClick = true;
 }
 
 //==============================================================================
