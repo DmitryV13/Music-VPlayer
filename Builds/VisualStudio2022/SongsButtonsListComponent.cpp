@@ -1,7 +1,7 @@
 #include "SongsButtonsListComponent.h"
 
 SongsButtonsListComponent::SongsButtonsListComponent(float width_, float height_)
-    :playingIndex(-1), pressedIndex(-1)
+    :playingIndexB(-1), pressedIndexB(-1), pressedIndexI(-1), buttonPressed(false), itemPressed(false)
 {
     setSize(width_, height_);
     container = std::make_unique<Component>();
@@ -77,6 +77,21 @@ void SongsButtonsListComponent::paint(juce::Graphics& g)
     container.get()->paint(g);
 }
 
+void SongsButtonsListComponent::release()
+{
+    folderName = "Folder unspecified";
+    playingIndexB = -1;
+    pressedIndexB = -1;
+    pressedIndexI = -1;
+
+    for (int i = 0; i < songs.size(); i++)
+    {
+        delete songs[i];
+    }
+    songs.clear();
+
+}
+
 std::string SongsButtonsListComponent::getSongPath(int i)
 {
     if (i<0 || i> songs.size() - 1) {
@@ -87,46 +102,101 @@ std::string SongsButtonsListComponent::getSongPath(int i)
     }
 }
 
-std::pair<int, int> SongsButtonsListComponent::getIndexes()
+std::vector<int> SongsButtonsListComponent::getIndexes()
 {
-    return std::pair<int, int>(playingIndex, pressedIndex);
+    std::vector<int> indexes;
+    indexes.push_back(playingIndexB);
+    indexes.push_back(pressedIndexB);
+    indexes.push_back(pressedIndexI);
+    return indexes;
 }
 
 void SongsButtonsListComponent::updateIndexes()
 {
-    if (playingIndex >= 0) {
-        songs[playingIndex]->unpressItem();
+    if (playingIndexB >= 0) {
+        songs[playingIndexB]->unpressItem();
     }
-    playingIndex = pressedIndex;
-    songs[playingIndex]->activateColor();
+    if (pressedIndexI >= 0) {
+        playingIndexB = pressedIndexI;
+        pressedIndexB = pressedIndexI;
+    }
+    else {
+        playingIndexB = pressedIndexB;
+    }
+    pressedIndexI = -1;
+    songs[playingIndexB]->activateColor();
 }
 
 void SongsButtonsListComponent::virtualClick()
 {
-    songs[pressedIndex]->playButton->clicked();
+    songs[pressedIndexB]->playButton->clicked();
 }
 
-void SongsButtonsListComponent::addSong(juce::File file)
+void SongsButtonsListComponent::changeItemNormalImageDefault()
 {
-    SongButtonItem* tmp = new SongButtonItem(10, 170, 240, 70, file);
-    songs.push_back(tmp);
-    tmp->onSongClicked([this]() {this->onSongClicked();});
-    container.get()->addAndMakeVisible(tmp);
-    resized();
+    songs[pressedIndexB]->playButton->changeNormalImageDefault();
 }
 
-void SongsButtonsListComponent::onSongClicked()
+bool SongsButtonsListComponent::isButtonPressed()
 {
-    bool itemPressed = false;
+    return buttonPressed;
+}
+
+bool SongsButtonsListComponent::isItemPressed()
+{
+    return itemPressed;
+}
+
+void SongsButtonsListComponent::resetPressedFlags()
+{
+    buttonPressed = false;
+    itemPressed = false;
+}
+
+bool SongsButtonsListComponent::addSong(juce::File file)
+{
+    std::string fileName = file.getFileNameWithoutExtension().toStdString();
     for (int i = 0; i < songs.size(); i++)
     {
-        if (i == playingIndex) continue;
-        itemPressed = songs[i]->isItemPressed();
-        if (itemPressed) {
-            pressedIndex = i;
+        if (fileName == songs[i]->getSongFullName()) return false;
+    }
+    SongButtonItem* tmp = new SongButtonItem(10, 170, 240, 70, file);
+    songs.push_back(tmp);
+    tmp->onSongClicked([this]() {this->onSongPlayButtonClicked();});
+    tmp->onItemClicked([this]() {this->onSongItemClicked();});
+    container.get()->addAndMakeVisible(tmp);
+    resized();
+    return true;
+}
+
+void SongsButtonsListComponent::onSongPlayButtonClicked()
+{
+    bool songPlayButtonPressed = false;
+    for (int i = 0; i < songs.size(); i++)
+    {
+        if (i == playingIndexB) continue;
+        songPlayButtonPressed = songs[i]->isSongPlayButtonPressed();
+        if (songPlayButtonPressed) {
+            pressedIndexB = i;
         }
     }
-    triggerOnSongIClickedEvent();
+    buttonPressed = true;
+    triggerOnSongButtonClicked();
+}
+
+void SongsButtonsListComponent::onSongItemClicked()
+{
+    bool songItemPressed = false;
+    for (int i = 0; i < songs.size(); i++)
+    {
+        if (i == playingIndexB) continue;
+        songItemPressed = songs[i]->isItemPressed();
+        if (songItemPressed) {
+            pressedIndexI = i;
+        }
+    }
+    itemPressed = true;
+    triggerOnSongButtonClicked();
 }
 
 void SongsButtonsListComponent::setFolderName(std::string folder)
@@ -139,7 +209,7 @@ void SongsButtonsListComponent::onSongIClicked(std::function<void()> handler)
     onSongIClickedHandler = handler;
 }
 
-void SongsButtonsListComponent::triggerOnSongIClickedEvent()
+void SongsButtonsListComponent::triggerOnSongButtonClicked()
 {
     if (onSongIClickedHandler != nullptr)
     {

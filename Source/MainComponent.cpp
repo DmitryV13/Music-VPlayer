@@ -10,7 +10,7 @@ MainComponent::MainComponent()
     // init for audio formats
     formatManager.registerBasicFormats();
 
-    // adding change listener for AudioTransportSource 
+    // adding change songsPlaylistener for AudioTransportSource 
     transportSource.addChangeListener(this);
 
     // timer
@@ -19,16 +19,16 @@ MainComponent::MainComponent()
     buttonsInit();
 
 
-    list = new SongsButtonsListComponent(900, 100);
-    addAndMakeVisible(list);
-    list->onSongIClicked([this]() {this->updateOnSongListClicked(); });
+    songsPlaylist = new SongsButtonsListComponent(900, 100);
+    addAndMakeVisible(songsPlaylist);
+    songsPlaylist->onSongIClicked([this]() {this->updateOnSongListClicked(); });
 
     //
     setSize(windowWidth, windowHeight);//800
 
     // viewport
     //addAndMakeVisible(viewport);
-    //viewport.setViewedComponent(list->getListContainer(), true);
+    //viewport.setViewedComponent(songsPlaylist->getListContainer(), true);
 
     // slider 
     addAndMakeVisible(songProgressBar);
@@ -216,6 +216,7 @@ void MainComponent::changeState(TransportState newState)
             sReplayButton->setButtonText("Stop");
             sReplayButton->setEnabled(false);
             playButton->changeNormalImageDefault();
+            songsPlaylist->changeItemNormalImageDefault();
             transportSource.setPosition(0.0);
             break;
 
@@ -253,7 +254,7 @@ void  MainComponent::playOnButtonClicked()
         changeState(Pausing);
 
     if (virtualSIClick) {
-        list->virtualClick();
+        songsPlaylist->virtualClick();
     }
 }
 
@@ -282,33 +283,7 @@ void MainComponent::openOnButtonClicked()
             auto file = fc.getResult();
             if (file != juce::File{})
             {
-                //repaint();  //redundant
-           
-                list->addSong(file);
-
-                auto* reader = formatManager.createReaderFor(file);
-
-                if (reader != nullptr)
-                {
-                    clearDataForNextSource();
-                    *fileLoaded = true;
-                    songName = file.getFileName();
-                    analyserComponent.attachFileState(fileLoaded);
-                    analyserComponent.setSampleRate(reader->sampleRate);
-
-                    auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);  
-                    transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);      
-                    playButton->setEnabled(true);
-                    closeButton->setEnabled(true);
-                    sNextButton->setEnabled(true);
-                    sPreviousButton->setEnabled(true);
-
-                    readerSource.reset(newSource.release());  
-                    
-                    songProgressBar.attachSource(&transportSource);
-                    songProgressBar.setRange(0, transportSource.getLengthInSeconds(), 0.1);
-                    songDurationComponent.setTotalLength(transportSource.getLengthInSeconds());
-                }
+                songsPlaylist->addSong(file);
             }
         });
 }
@@ -321,25 +296,24 @@ void MainComponent::folderOnButtonClicked()
         true); // Последний аргумент - true, чтобы выбрать только папки
 
     auto chooserFlags = juce::FileBrowserComponent::openMode
-        | juce::FileBrowserComponent::canSelectDirectories; // Добавляем возможность выбора директорий
+        | juce::FileBrowserComponent::canSelectDirectories; 
 
     chooser->launchAsync(chooserFlags, [this](const juce::FileChooser& fc)
         {
-            auto folder = fc.getResult(); // Получаем выбранную папку
+            auto folder = fc.getResult(); 
             if (folder != juce::File{})
             {
 
-                // Например, если вы хотите добавить все аудиофайлы из этой папки:
                 juce::Array<juce::File> audioFiles = folder.findChildFiles(juce::File::findFiles, false, "*.wav;*.aif;*.aiff;*.mp3");
                 
                 if (audioFiles.size() != 0) {
-                    list->setFolderName(folder.getFileName().toStdString());
+                    songsPlaylist->setFolderName(folder.getFileName().toStdString());
+                    closeButton->setEnabled(true);
                 }
 
                 for (auto& file : audioFiles)
                 {
-                    list->addSong(file);
-                    
+                    songsPlaylist->addSong(file);
                 }
             }
         });
@@ -347,6 +321,7 @@ void MainComponent::folderOnButtonClicked()
 
 void MainComponent::closeButtonClicked()
 {
+    songsPlaylist->release();
     clearDataForNextSource();
     closeButton->setEnabled(false);
 }
@@ -361,10 +336,10 @@ void MainComponent::sPreviousOnButtonClicked()
 
 void MainComponent::updateOnSongListClicked()
 {
-    std::pair<int, int> playingPressed = list->getIndexes();
-    if (playingPressed.first != playingPressed.second) {
-        list->updateIndexes();
-        auto file = juce::File(list->getSongPath(playingPressed.second));
+    std::vector<int> indexes = songsPlaylist->getIndexes();
+    if ((indexes[2] < 0) ? (indexes[0] != indexes[1]) : (indexes[0] != indexes[2])) {
+        songsPlaylist->updateIndexes();
+        auto file = juce::File(songsPlaylist->getSongPath(songsPlaylist->isButtonPressed() ? indexes[1] : indexes[2]));
         if (file != juce::File{})
         {
 
@@ -374,7 +349,7 @@ void MainComponent::updateOnSongListClicked()
             {
                 clearDataForNextSource();
                 *fileLoaded = true;
-                songName = file.getFileName();
+                songName = file.getFileNameWithoutExtension();
                 analyserComponent.attachFileState(fileLoaded);
                 analyserComponent.setSampleRate(reader->sampleRate);
 
@@ -394,10 +369,13 @@ void MainComponent::updateOnSongListClicked()
             }
         }
     }
-    virtualSIClick = false;
-    playButton->clicked();
-    playOnButtonClicked();
-    virtualSIClick = true;
+    if (songsPlaylist->isButtonPressed()) {
+        virtualSIClick = false;
+        playButton->clicked();
+        playOnButtonClicked();
+        virtualSIClick = true;
+    }
+    songsPlaylist->resetPressedFlags();
 }
 
 //==============================================================================
@@ -443,7 +421,7 @@ void MainComponent::paint(juce::Graphics& g)
 
     // song name
     g.setColour(juce::Colours::white);
-    juce::Rectangle<int> newArea1(0, 0, getWidth(), buttonHeight);
+    juce::Rectangle<int> newArea1(100, 0, getWidth() - 360, buttonHeight);
     g.drawText(songName, newArea1, juce::Justification::centred, true);
     
 }
@@ -518,6 +496,6 @@ void MainComponent::resized()
    
 
 
-    list->setBounds(getLocalBounds().getWidth() - 260, 0, 260, getLocalBounds().getHeight());
+    songsPlaylist->setBounds(getLocalBounds().getWidth() - 260, 0, 260, getLocalBounds().getHeight());
     //viewport.setBounds(juce::Rectangle<int>(800, 0, 260, 540));
 }

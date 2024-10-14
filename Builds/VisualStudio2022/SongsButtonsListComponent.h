@@ -8,8 +8,12 @@
 class SongsButtonsListComponent : public juce::Component
 {
 private:
-	int playingIndex;
-	int pressedIndex;
+	int playingIndexB;
+	int pressedIndexB;
+	int pressedIndexI;
+
+	bool buttonPressed;
+	bool itemPressed;
 
 	std::string folderName = "Folder unspecified";
 	std::string folderPath;
@@ -28,19 +32,26 @@ public:
 
 	void resized() override;
 	void paint(juce::Graphics& g) override;
+	void release();
 
 	std::string getSongPath(int i);
-	std::pair<int, int> getIndexes();
+	std::vector<int> getIndexes();
 	void updateIndexes();
 
 	void virtualClick();
+	void changeItemNormalImageDefault();
 
-	void onSongClicked();
-	void addSong(juce::File file);
+	bool isButtonPressed();
+	bool isItemPressed();
+	void resetPressedFlags();
+
+	void onSongPlayButtonClicked();
+	void onSongItemClicked();
+	bool addSong(juce::File file);
 	void setFolderName(std::string folder);
 
 	void onSongIClicked(std::function<void()> handler);
-	void triggerOnSongIClickedEvent();
+	void triggerOnSongButtonClicked();
 
 
 	juce::Component* getListContainer();

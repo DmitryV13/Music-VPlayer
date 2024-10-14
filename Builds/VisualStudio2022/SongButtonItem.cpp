@@ -1,10 +1,11 @@
 #include "SongButtonItem.h"
 
 SongButtonItem::SongButtonItem(float width_, float height_, juce::File file)
-    : width(width), height(height), pressed(false)
+    : width(width), height(height), pressedPB(false), pressedSI(false)
 {
     path = file.getFullPathName().toStdString();
     juce::String fileName = file.getFileNameWithoutExtension();
+    fullSName = fileName.toStdString();
     if (fileName.contains(" - "))
     {
         sName = fileName.fromLastOccurrenceOf(" - ", false, false).toStdString();
@@ -31,7 +32,6 @@ SongButtonItem::SongButtonItem(float width_, float height_, juce::File file)
     addAndMakeVisible(playButton);
     playButton->onClick = [this] { playOnButtonClicked(); };
     playButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(53, 70, 213));
-   // playButton->setEnabled(false);
 
     //playButton->setInterceptsMouseClicks(true, false);
     playButton->setWantsKeyboardFocus(false);
@@ -42,10 +42,11 @@ SongButtonItem::SongButtonItem(float width_, float height_, juce::File file)
 }
 
 SongButtonItem::SongButtonItem(float x, float y, float width_, float height_, juce::File file)
-    : width(width), height(height), pressed(false)
+    : width(width), height(height), pressedPB(false), pressedSI(false)
 {
     path = file.getFullPathName().toStdString();
     juce::String fileName = file.getFileNameWithoutExtension();
+    fullSName = fileName.toStdString();
     if (fileName.contains(" - "))
     {
         sName = fileName.fromLastOccurrenceOf(" - ", false, false).toStdString();
@@ -89,7 +90,7 @@ SongButtonItem::~SongButtonItem()
 
 void SongButtonItem::playOnButtonClicked()
 {
-    pressed = true;
+    pressedPB = true;
     triggerOnSongClickedEvent();
 }
 
@@ -103,6 +104,19 @@ void SongButtonItem::triggerOnSongClickedEvent()
     if (onSongClickedHandler != nullptr)
     {
         onSongClickedHandler();
+    }
+}
+
+void SongButtonItem::onItemClicked(std::function<void()> handler)
+{
+    onItemClickedHandler = handler;
+}
+
+void SongButtonItem::triggerOnItemClickedEvent()
+{
+    if (onItemClickedHandler != nullptr)
+    {
+        onItemClickedHandler();
     }
 }
 
@@ -158,14 +172,46 @@ std::string SongButtonItem::getSongPath()
     return path;
 }
 
+std::string SongButtonItem::getSongFullName()
+{
+    return fullSName;
+}
+
+bool SongButtonItem::isSongPlayButtonPressed()
+{
+    return pressedPB;
+}
+
 bool SongButtonItem::isItemPressed()
 {
-    return pressed;
+    return pressedSI;
 }
 
 void SongButtonItem::unpressItem()
 {
     disactivateColor();
     playButton->changeNormalImageDefault();
-    pressed = false;
+    pressedPB = false;
+    pressedSI = false;
+}
+
+void SongButtonItem::mouseDown(const juce::MouseEvent& event)
+{
+    juce::Rectangle<int> clickableArea(getLocalBounds()); 
+    if (clickableArea.contains(event.getPosition()))
+    {
+        pressedSI = true;
+    }
+    else {
+        pressedSI = false;
+    }
+}
+
+void SongButtonItem::mouseUp(const juce::MouseEvent& event)
+{
+    juce::Rectangle<int> clickableArea(getLocalBounds());
+    if (clickableArea.contains(event.getPosition()) && pressedSI == true)
+    {
+        triggerOnItemClickedEvent();
+    }
 }

@@ -90,7 +90,7 @@ private:
     MyDrawableButton* folderButton;
     //juce::ToggleButton voiceOffOn;
 
-    SongsButtonsListComponent* list;
+    SongsButtonsListComponent* songsPlaylist;
     bool virtualSIClick;
 
     //juce::Viewport viewport;
