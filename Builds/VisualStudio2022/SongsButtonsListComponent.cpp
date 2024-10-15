@@ -127,6 +127,14 @@ void SongsButtonsListComponent::updateIndexes()
     songs[playingIndexB]->activateColor();
 }
 
+void SongsButtonsListComponent::moveSongItem(int step)
+{
+    if (playingIndexB + step < songs.size() && playingIndexB + step >= 0) {
+        pressedIndexI = playingIndexB + step;
+        triggerOnSongButtonClicked();
+    }
+}
+
 void SongsButtonsListComponent::virtualClick()
 {
     songs[pressedIndexB]->playButton->clicked();
@@ -134,7 +142,9 @@ void SongsButtonsListComponent::virtualClick()
 
 void SongsButtonsListComponent::changeItemNormalImageDefault()
 {
-    songs[pressedIndexB]->playButton->changeNormalImageDefault();
+    if (pressedIndexB >= 0) {
+        songs[pressedIndexB]->playButton->changeNormalImageDefault();
+    }
 }
 
 bool SongsButtonsListComponent::isButtonPressed()

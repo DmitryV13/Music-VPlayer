@@ -2819,7 +2819,6 @@
     <ClCompile Include="MySlider.cpp" />
     <ClCompile Include="SongButtonItem.cpp" />
     <ClCompile Include="SongsButtonsListComponent.cpp" />
-    <ClCompile Include="SpectrogramComponent.cpp" />
     <ClCompile Include="TimeComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -4117,7 +4116,6 @@
     <ClInclude Include="MySlider.h" />
     <ClInclude Include="SongButtonItem.h" />
     <ClInclude Include="SongsButtonsListComponent.h" />
-    <ClInclude Include="SpectrogramComponent.h" />
     <ClInclude Include="TimeComponent.h" />
   </ItemGroup>
   <ItemGroup>

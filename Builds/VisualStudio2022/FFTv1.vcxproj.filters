@@ -3399,9 +3399,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="SpectrogramComponent.cpp">
-      <Filter>FFTv1.0\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Debug.cpp">
       <Filter>FFTv1.0\Source</Filter>
     </ClCompile>
@@ -7296,9 +7293,6 @@
       <Filter>FFTv1.0\Headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\MainComponent.h">
-      <Filter>FFTv1.0\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="SpectrogramComponent.h">
       <Filter>FFTv1.0\Headers</Filter>
     </ClInclude>
     <ClInclude Include="TimeComponent.h">

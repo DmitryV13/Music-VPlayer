@@ -37,6 +37,7 @@ public:
 	std::string getSongPath(int i);
 	std::vector<int> getIndexes();
 	void updateIndexes();
+	void moveSongItem(int step);
 
 	void virtualClick();
 	void changeItemNormalImageDefault();

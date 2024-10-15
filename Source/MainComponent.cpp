@@ -1,6 +1,5 @@
 ﻿#include "MainComponent.h"
 
-
 //==============================================================================
 MainComponent::MainComponent()
     : state(Stopped), virtualSIClick(true)
@@ -42,7 +41,6 @@ MainComponent::MainComponent()
     //songProgressBar.setColour(juce::Slider::rotarySliderOutlineColourId, juce::Colours::green);// Цвет контура ползунка
 
     // song time progress bar
-    songDurationComponent.attachFileState(fileLoaded);
     songDurationComponent.setCurrentPosition(0);
     addAndMakeVisible(songDurationComponent);
 
@@ -138,7 +136,7 @@ void MainComponent::buttonsInit()
     sNextButton->addDrawableImage("imgs/forward-100.png", 0);
     sNextButton->resetImages();
     addAndMakeVisible(sNextButton);
-    sNextButton->onClick = [this] { sReplayOnButtonClicked(); };
+    sNextButton->onClick = [this] { sNextOnButtonClicked(); };
     sNextButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(40, 50, 70));
     sNextButton->setEnabled(false);
 
@@ -151,7 +149,7 @@ void MainComponent::buttonsInit()
     sPreviousButton->addDrawableImage("imgs/backward-100.png", 0);
     sPreviousButton->resetImages();
     addAndMakeVisible(sPreviousButton);
-    sPreviousButton->onClick = [this] { sReplayOnButtonClicked(); };
+    sPreviousButton->onClick = [this] { sPreviousOnButtonClicked(); };
     sPreviousButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(40, 50, 70));
     sPreviousButton->setEnabled(false);
     ///////////////////////////////////////////////////////////////////////////////
@@ -284,6 +282,7 @@ void MainComponent::openOnButtonClicked()
             if (file != juce::File{})
             {
                 songsPlaylist->addSong(file);
+                closeButton->setEnabled(true);
             }
         });
 }
@@ -328,10 +327,12 @@ void MainComponent::closeButtonClicked()
 
 void MainComponent::sNextOnButtonClicked()
 {
+    songsPlaylist->moveSongItem(1);
 }
 
 void MainComponent::sPreviousOnButtonClicked()
 {
+    songsPlaylist->moveSongItem(-1);
 }
 
 void MainComponent::updateOnSongListClicked()
