@@ -3399,9 +3399,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="SpectrogramComponent.cpp">
-      <Filter>FFTv1.0\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Debug.cpp">
       <Filter>FFTv1.0\Source</Filter>
     </ClCompile>
@@ -3415,6 +3412,15 @@
       <Filter>FFTv1.0\Source</Filter>
     </ClCompile>
     <ClCompile Include="MySlider.cpp">
+      <Filter>FFTv1.0\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SongsButtonsListComponent.cpp">
+      <Filter>FFTv1.0\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SongButtonItem.cpp">
+      <Filter>FFTv1.0\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawablePTunableButton.cpp">
       <Filter>FFTv1.0\Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -7289,13 +7295,19 @@
     <ClInclude Include="..\..\Source\MainComponent.h">
       <Filter>FFTv1.0\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="SpectrogramComponent.h">
-      <Filter>FFTv1.0\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="TimeComponent.h">
       <Filter>FFTv1.0\Headers</Filter>
     </ClInclude>
     <ClInclude Include="MySlider.h">
+      <Filter>FFTv1.0\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SongsButtonsListComponent.h">
+      <Filter>FFTv1.0\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SongButtonItem.h">
+      <Filter>FFTv1.0\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawablePTunableButton.h">
       <Filter>FFTv1.0\Headers</Filter>
     </ClInclude>
   </ItemGroup>

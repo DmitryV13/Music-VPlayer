@@ -3,9 +3,9 @@
 
 class MyDrawableButton : public juce::DrawableButton
 {
-private:
+protected:
 	std::vector<juce::DrawableImage*> dImgs;
-	std::vector<juce::DrawableImage*> cDImgs;
+	std::vector<juce::DrawableImage*> cDImgs; 
 	int index;
 	const int initialIndex;
 	bool clickedChangingState;
@@ -17,6 +17,7 @@ public:
 	void addClikedImage(std::string path);
 	void addDrawableImage(std::string path, int i);
 	void clicked() override;
+
 
 	void changeClickedChangingState(bool state);
 	bool getClickedChangingState();
