@@ -214,7 +214,6 @@ void MainComponent::changeState(TransportState newState)
             sReplayButton->setButtonText("Stop");
             sReplayButton->setEnabled(false);
             playButton->changeNormalImageDefault();
-            songsPlaylist->changeItemNormalImageDefault();
             transportSource.setPosition(0.0);
             break;
 
@@ -244,6 +243,7 @@ void MainComponent::changeState(TransportState newState)
     }
 }
 
+
 void  MainComponent::playOnButtonClicked()
 {
     if ((state == Stopped) || (state == Paused))
@@ -262,6 +262,8 @@ void MainComponent::sReplayOnButtonClicked()
         changeState(Stopped);
     else
         changeState(Stopping);
+
+    songsPlaylist->changeItemNormalImageDefault();
 }
 
 void MainComponent::voiceOffOnButtonClicked()
