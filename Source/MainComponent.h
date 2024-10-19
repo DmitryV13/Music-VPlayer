@@ -4,13 +4,13 @@
 #include "Windows.h"
 #include <iostream>
 #include <fstream>
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/Debug.h"
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/AnalyserComponent.h"
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/MyDrawableButton.h"
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/TimeComponent.h"
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/MySlider.h"
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/SongButtonItem.h"
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/SongsButtonsListComponent.h"
+#include "../Builds/VisualStudio2022/Debug.h"
+#include "../Builds/VisualStudio2022/AnalyserComponent.h"
+#include "../Builds/VisualStudio2022/MyDrawableButton.h"
+#include "../Builds/VisualStudio2022/TimeComponent.h"
+#include "../Builds/VisualStudio2022/MySlider.h"
+#include "../Builds/VisualStudio2022/SongButtonItem.h"
+#include "../Builds/VisualStudio2022/SongsButtonsListComponent.h"
 
 
 //==============================================================================

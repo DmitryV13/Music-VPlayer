@@ -2,8 +2,8 @@
 
 #include <JuceHeader.h>
 #include "Windows.h"
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/SongButtonItem.h"
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/DrawablePTunableButton.h"
+#include "../Builds/VisualStudio2022/SongButtonItem.h"
+#include "../Builds/VisualStudio2022/DrawablePTunableButton.h"
 
 class SongsButtonsListComponent : public juce::Component
 {

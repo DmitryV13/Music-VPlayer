@@ -1,6 +1,6 @@
 #pragma once
 
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/MyDrawableButton.h"
+#include "../Builds/VisualStudio2022/MyDrawableButton.h"
 
 class DrawablePTunableButton : public MyDrawableButton
 {

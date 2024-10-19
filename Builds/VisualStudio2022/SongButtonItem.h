@@ -2,7 +2,7 @@
 
 #include <JuceHeader.h>
 #include "Windows.h"
-#include "/Applications/Desktop/MV/FFTv1.0/Builds/VisualStudio2022/MyDrawableButton.h"
+#include "../Builds/VisualStudio2022/MyDrawableButton.h"
 
 class SongButtonItem : public juce::Component
 {
