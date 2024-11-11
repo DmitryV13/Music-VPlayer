@@ -52,7 +52,7 @@ void MyDrawableButton::clicked()
 void MyDrawableButton::changeClickedChangingState(bool state)
 {   
     clickedChangingState = state;
-    if(state)
+    if(clickedChangingState)
     {
         dImgs[0] = cDImgs[index];
         resetImages();
@@ -84,7 +84,9 @@ bool MyDrawableButton::isNormalImageInitial()
 
 void MyDrawableButton::changeNormalImageDefault()
 {
-    index = 0;
-    dImgs[0] = cDImgs[0];
-    resetImages();
+    if (cDImgs.size() != 0) {
+        index = 0;
+        dImgs[0] = cDImgs[0];
+        resetImages();
+    }
 }

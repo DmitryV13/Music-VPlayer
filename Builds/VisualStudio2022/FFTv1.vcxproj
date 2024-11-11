@@ -2814,9 +2814,11 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp" />
     <ClCompile Include="AnalyserComponent.cpp" />
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="DrawablePTunableButton.cpp" />
     <ClCompile Include="MyDrawableButton.cpp" />
     <ClCompile Include="MySlider.cpp" />
-    <ClCompile Include="SpectrogramComponent.cpp" />
+    <ClCompile Include="SongButtonItem.cpp" />
+    <ClCompile Include="SongsButtonsListComponent.cpp" />
     <ClCompile Include="TimeComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -4109,9 +4111,11 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="AnalyserComponent.h" />
     <ClInclude Include="Debug.h" />
+    <ClInclude Include="DrawablePTunableButton.h" />
     <ClInclude Include="MyDrawableButton.h" />
     <ClInclude Include="MySlider.h" />
-    <ClInclude Include="SpectrogramComponent.h" />
+    <ClInclude Include="SongButtonItem.h" />
+    <ClInclude Include="SongsButtonsListComponent.h" />
     <ClInclude Include="TimeComponent.h" />
   </ItemGroup>
   <ItemGroup>

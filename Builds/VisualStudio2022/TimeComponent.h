@@ -10,14 +10,17 @@ public:
 
 	void setTotalLength(double length);
 	void setCurrentPosition(double pos);
-	void attachFileState(bool* state);
 
 	void paint(juce::Graphics& g) override;
 
 
 
 private:
-	int totalLength;
+	int totalHours;
+	int totalMinutes;
+	int totalSeconds;
+
+	std::string sTotalLength = "00";
 	int currentPosition;
 	bool* fileLoaded;
 
