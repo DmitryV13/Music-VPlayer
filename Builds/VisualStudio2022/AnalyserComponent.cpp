@@ -51,10 +51,10 @@ void AnalyserComponent::fillBufferWithData(const float* data, int numSamples)
 void AnalyserComponent::paint(juce::Graphics& g) 
 {
     g.fillAll(juce::Colour::fromRGB(21, 23, 24));
-
+  
     g.setColour(juce::Colour::fromRGB(53, 70, 213));
     g.drawRect(getLocalBounds());
-
+  
     g.setOpacity(1.0f);
     g.setColour(juce::Colours::white);
     drawFrame(g);
@@ -157,32 +157,33 @@ void AnalyserComponent::lineRepresentation(juce::Graphics& g, int i)
 
 void AnalyserComponent::rectRepresentation(juce::Graphics& g, int i)
 {
-    float maxAmplitude =
-        (*std::max_element(scopeData + (i - 1), scopeData + (i - 1) + sizeOfInterval));
+   float maxAmplitude =
+       (*std::max_element(scopeData + (i - 1), scopeData + (i - 1) + sizeOfInterval));
 
-    float freqX = juce::jmap(i - 1, 0, scopeSize - 1, screenSpace, width - screenSpace);
-    int index = 
-        static_cast<int>(freqX / ((width - screenSpace * 2) / (scopeSize / sizeOfInterval)));
+   float freqX = juce::jmap(i - 1, 0, scopeSize - 1, screenSpace, width - screenSpace);
+   int index = 
+       static_cast<int>(freqX / ((width - screenSpace * 2) / (scopeSize / sizeOfInterval)));
 
-    if (amplDataPrev[index] > maxAmplitude) {
-        amplDataPrev[index] -= 0.01;
-        if (amplDataPrev[index] < 0.15) {
-            amplDataPrev[index] = 0.15;
-        }
-        maxAmplitude = amplDataPrev[index];
-    }
-    else {
-        amplDataPrev[index] = maxAmplitude;
-    }
+   if (amplDataPrev[index] > maxAmplitude) {
+       amplDataPrev[index] -= 0.01;
+       if (amplDataPrev[index] < 0.15) {
+           amplDataPrev[index] = 0.15;
+       }
+       maxAmplitude = amplDataPrev[index];
+   }
+   else {
+       amplDataPrev[index] = maxAmplitude;
+   }
 
-    float freqY = juce::jmap(maxAmplitude, 0.0f, 1.0f, (float)height, 0.0f);
-    //debug.addLog(std::to_string(width));
-    g.setColour(juce::Colour::fromRGB(53, 70, 213));
-    g.drawRect(
-        freqX,
-        freqY,
-        (float)((width - screenSpace * 2) / (scopeSize / sizeOfInterval)),
-        (float)(height - freqY));
+   float freqY = juce::jmap(maxAmplitude, 0.0f, 1.0f, (float)height, 0.0f);
+   //debug.addLog(std::to_string(width));
+   g.setColour(juce::Colour::fromRGB(53, 70, 213));
+   g.drawRect(
+       freqX,
+       freqY,
+       (float)((width - screenSpace * 2) / (scopeSize / sizeOfInterval)),
+       (float)(height - freqY));
+ 
 }
 
 void AnalyserComponent::setSampleRate(double sRate)
