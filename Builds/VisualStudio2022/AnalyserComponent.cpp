@@ -140,11 +140,17 @@ void AnalyserComponent::calculateFFTForNextData()
 
 void AnalyserComponent::drawFrame(juce::Graphics& g)
 {
-    for (int i = startFIndex; i <= endFIndex; i += sizeOfInterval)
-    {
-        rectRepresentation(g, i);
-        //lineRepresentation(g, i);
+    if (switchVis) {
+        for (int i = startFIndex; i <= endFIndex; i += sizeOfInterval)
+        {
+            rectRepresentation(g, i);
+            //lineRepresentation(g, i);
+        }
     }
+    else {
+        circleRepresentation(g);
+    }
+
 }
 
 void AnalyserComponent::lineRepresentation(juce::Graphics& g, int i)
@@ -184,6 +190,43 @@ void AnalyserComponent::rectRepresentation(juce::Graphics& g, int i)
        (float)((width - screenSpace * 2) / (scopeSize / sizeOfInterval)),
        (float)(height - freqY));
  
+}
+
+void AnalyserComponent::circleRepresentation(juce::Graphics& g)
+{
+    const float centerX = width / 2.0f;
+    const float centerY = height / 2.0f;
+    const float baseRadius = juce::jmin(centerX, centerY) - 50.0f;
+    const float lineRadiusOffset = 10.0f; 
+    const float amplitudeBoost = 10.0f; 
+
+    g.setColour(juce::Colours::grey);
+    g.drawEllipse(centerX - baseRadius, centerY - baseRadius, baseRadius * 2, baseRadius * 2, 1.0f);
+
+    float prevX = centerX + baseRadius;
+    float prevY = centerY;
+
+    for (int i = 0; i < scopeSize; ++i) {
+
+        float amplitude = scopeData[i] * amplitudeBoost; 
+
+        float currentRadius = baseRadius + amplitude * lineRadiusOffset;
+
+        float angle = juce::jmap(static_cast<float>(i), 0.0f, static_cast<float>(scopeSize), 0.0f, juce::MathConstants<float>::twoPi);
+
+        float x = centerX + currentRadius * std::cos(angle);
+        float y = centerY + currentRadius * std::sin(angle);
+
+        g.setColour(juce::Colours::lightblue);
+        g.drawLine(prevX, prevY, x, y, 2.0f);
+
+        prevX = x;
+        prevY = y;
+    }
+
+    float firstX = centerX + (baseRadius + scopeData[0] * amplitudeBoost * lineRadiusOffset) * std::cos(0);
+    float firstY = centerY + (baseRadius + scopeData[0] * amplitudeBoost * lineRadiusOffset) * std::sin(0);
+    g.drawLine(prevX, prevY, firstX, firstY, 2.0f);
 }
 
 void AnalyserComponent::setSampleRate(double sRate)

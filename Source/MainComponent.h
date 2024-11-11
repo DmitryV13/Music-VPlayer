@@ -65,6 +65,8 @@ private:
     void openOnButtonClicked();
     void folderOnButtonClicked();
     void closeButtonClicked();
+    void volumeButtonClicked();
+    void changeVisButtonClicked();
     void voiceOffOnButtonClicked();
 
     void updateOnSongListClicked();
@@ -87,11 +89,14 @@ private:
     MyDrawableButton* sNextButton;
     MyDrawableButton* sPreviousButton;
     MyDrawableButton* closeButton;
+    MyDrawableButton* volumeButton;
+    MyDrawableButton* changeVisButton;
     MyDrawableButton* folderButton;
     //juce::ToggleButton voiceOffOn;
 
     SongsButtonsListComponent* songsPlaylist;
     bool virtualSIClick;
+    bool isMuted = false;
 
     //juce::Viewport viewport;
 

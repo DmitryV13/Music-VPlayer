@@ -51,12 +51,16 @@ public:
 
     void rectRepresentation(juce::Graphics& g, int i);
 
+    void circleRepresentation(juce::Graphics& g);
+
+    short int switchVis = 0;
+
     enum
     {
-        fftOrder = 11,            
-        fftSize = 1 << fftOrder,  
+        fftOrder = 11,
+        fftSize = 1 << fftOrder,
         // num of total points
-        scopeSize = 1000            
+        scopeSize = 1000
     };
 
 private:

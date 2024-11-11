@@ -166,6 +166,30 @@ void MainComponent::buttonsInit()
     closeButton->setEnabled(false);
     ///////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////
+    volumeButton = new MyDrawableButton(
+        "Close",
+        juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
+    volumeButton->setSize(buttonWidth, buttonHeight);
+    volumeButton->addClikedImage("imgs/volume-100.png");
+    volumeButton->addClikedImage("imgs/novolume-100.png");
+    volumeButton->changeClickedChangingState(true);
+    volumeButton->resetImages();
+    addAndMakeVisible(volumeButton);
+    volumeButton->onClick = [this] { volumeButtonClicked(); };
+    volumeButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(40, 50, 70));
+    volumeButton->setEnabled(true);
+    ///////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
+    changeVisButton = new MyDrawableButton(
+        "Close",
+        juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
+    changeVisButton->setSize(buttonWidth, buttonHeight);
+    changeVisButton->addDrawableImage("imgs/play-100.png", 0);
+    changeVisButton->resetImages();
+    addAndMakeVisible(changeVisButton);
+    changeVisButton->onClick = [this] { changeVisButtonClicked(); };
+    changeVisButton->setColour(juce::TextButton::buttonColourId, juce::Colour::fromRGB(40, 50, 70));
+    changeVisButton->setEnabled(true);
 }
 
 void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
@@ -326,6 +350,31 @@ void MainComponent::closeButtonClicked()
     clearDataForNextSource();
     closeButton->setEnabled(false);
 }
+void MainComponent::volumeButtonClicked() 
+{
+    isMuted = !isMuted; 
+
+    if (isMuted)
+    {
+        transportSource.setGain(0.0f);
+    }
+    else
+    {
+        transportSource.setGain(1.0f);
+    }
+}
+
+void MainComponent::changeVisButtonClicked()
+{
+    if (analyserComponent.switchVis)
+    {
+        analyserComponent.switchVis = 0;
+    }
+    else
+    {
+        analyserComponent.switchVis = 1;
+    }
+}
 
 void MainComponent::sNextOnButtonClicked()
 {
@@ -458,6 +507,7 @@ void MainComponent::resized()
 
     openButton->setBounds(cordX, 10, buttonWidth - 20, buttonHeight - 20);
     folderButton->setBounds(cordX + buttonWidth - 20 + 10, 10, buttonWidth - 20, buttonHeight - 20);
+    changeVisButton->setBounds(cordX + buttonWidth - 20 + 60, 10, buttonWidth - 20, buttonHeight - 20);
 
     //cordX += buttonWidth + buttonSpacing;
     sPreviousButton->setBounds(cordX, cordY, buttonWidth, buttonHeight);
@@ -469,6 +519,8 @@ void MainComponent::resized()
     sReplayButton->setBounds(cordX, cordY, buttonWidth, buttonHeight);
     cordX += buttonWidth + buttonSpacing;
     closeButton->setBounds(cordX, cordY, buttonWidth, buttonHeight);
+    cordX += buttonWidth + buttonSpacing;
+    volumeButton->setBounds(cordX, cordY, buttonWidth, buttonHeight);
     cordX += buttonWidth + buttonSpacing;
 
     // timer
