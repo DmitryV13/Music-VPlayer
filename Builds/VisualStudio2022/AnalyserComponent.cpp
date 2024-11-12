@@ -21,7 +21,10 @@ void AnalyserComponent::initialize()
 {
     width = getLocalBounds().getWidth();
     height = getLocalBounds().getHeight();
-
+    for (int i = 0; i < scopeSize; ++i)
+    {
+        scopeData[i] = 0.0f;
+    }
     amplDataPrev.resize(static_cast<int>(scopeSize / sizeOfInterval));
     for (size_t i = 0; i < static_cast<int>(scopeSize / sizeOfInterval); i++)
     {
@@ -144,13 +147,11 @@ void AnalyserComponent::drawFrame(juce::Graphics& g)
         for (int i = startFIndex; i <= endFIndex; i += sizeOfInterval)
         {
             rectRepresentation(g, i);
-            //lineRepresentation(g, i);
         }
     }
     else {
         circleRepresentation(g);
     }
-
 }
 
 void AnalyserComponent::lineRepresentation(juce::Graphics& g, int i)
@@ -194,39 +195,39 @@ void AnalyserComponent::rectRepresentation(juce::Graphics& g, int i)
 
 void AnalyserComponent::circleRepresentation(juce::Graphics& g)
 {
+    int barCount = 72;
+    float amplitudeMultiplier = 10.0f;
     const float centerX = width / 2.0f;
     const float centerY = height / 2.0f;
-    const float baseRadius = juce::jmin(centerX, centerY) - 50.0f;
-    const float lineRadiusOffset = 10.0f; 
-    const float amplitudeBoost = 10.0f; 
+    const float baseRadius = juce::jmin(centerX, centerY) - 100.0f;
+    const float lineRadiusOffset = 10.0f;
 
-    g.setColour(juce::Colours::grey);
+    g.setColour(juce::Colour::fromRGB(53, 70, 213));
     g.drawEllipse(centerX - baseRadius, centerY - baseRadius, baseRadius * 2, baseRadius * 2, 1.0f);
 
     float prevX = centerX + baseRadius;
     float prevY = centerY;
 
-    for (int i = 0; i < scopeSize; ++i) {
+    for (int i = 0; i < barCount; ++i) {
+        int dataIdx = (i * scopeSize) / barCount; 
 
-        float amplitude = scopeData[i] * amplitudeBoost; 
+        float amplitude = scopeData[dataIdx] * amplitudeMultiplier;
 
         float currentRadius = baseRadius + amplitude * lineRadiusOffset;
 
-        float angle = juce::jmap(static_cast<float>(i), 0.0f, static_cast<float>(scopeSize), 0.0f, juce::MathConstants<float>::twoPi);
+        float angle = juce::jmap(static_cast<float>(i), 0.0f, static_cast<float>(barCount), 0.0f, juce::MathConstants<float>::twoPi);
 
         float x = centerX + currentRadius * std::cos(angle);
         float y = centerY + currentRadius * std::sin(angle);
 
-        g.setColour(juce::Colours::lightblue);
-        g.drawLine(prevX, prevY, x, y, 2.0f);
+        g.setColour(juce::Colour::fromRGB(53, 70, 213));
+        g.drawLine(centerX + baseRadius * std::cos(angle),
+            centerY + baseRadius * std::sin(angle),
+            x, y, 2.0f);
 
         prevX = x;
         prevY = y;
     }
-
-    float firstX = centerX + (baseRadius + scopeData[0] * amplitudeBoost * lineRadiusOffset) * std::cos(0);
-    float firstY = centerY + (baseRadius + scopeData[0] * amplitudeBoost * lineRadiusOffset) * std::sin(0);
-    g.drawLine(prevX, prevY, firstX, firstY, 2.0f);
 }
 
 void AnalyserComponent::setSampleRate(double sRate)

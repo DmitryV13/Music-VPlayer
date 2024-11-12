@@ -184,7 +184,7 @@ void MainComponent::buttonsInit()
         "Close",
         juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
     changeVisButton->setSize(buttonWidth, buttonHeight);
-    changeVisButton->addDrawableImage("imgs/play-100.png", 0);
+    changeVisButton->addDrawableImage("imgs/mode1-100.png", 0);
     changeVisButton->resetImages();
     addAndMakeVisible(changeVisButton);
     changeVisButton->onClick = [this] { changeVisButtonClicked(); };
