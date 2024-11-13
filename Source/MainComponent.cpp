@@ -167,7 +167,7 @@ void MainComponent::buttonsInit()
     ///////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////
     volumeButton = new MyDrawableButton(
-        "Close",
+        "Volume",
         juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
     volumeButton->setSize(buttonWidth, buttonHeight);
     volumeButton->addClikedImage("imgs/volume-100.png");
@@ -181,7 +181,7 @@ void MainComponent::buttonsInit()
     ///////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////
     changeVisButton = new MyDrawableButton(
-        "Close",
+        "ChangeVis",
         juce::DrawableButton::ButtonStyle::ImageOnButtonBackground);
     changeVisButton->setSize(buttonWidth, buttonHeight);
     changeVisButton->addDrawableImage("imgs/mode1-100.png", 0);
